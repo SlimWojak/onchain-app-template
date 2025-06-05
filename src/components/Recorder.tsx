@@ -79,7 +79,7 @@ export default function Recorder() {
   };
 
  const uploadToIPFS = async (blob: Blob) => {
- const client = new Client(); // ✅
+const client = new Client({ agent: globalThis.fetch });
 
 
   await client.login('craig@imoon.ai');
