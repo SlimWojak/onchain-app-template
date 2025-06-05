@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { createUploader, File } from '@web3-storage/w3up-client';
+import { Client } from '@web3-storage/w3up-client';
 
 const uploader = createUploader();
 const SPACE_DID = 'did:key:z6MkhabowL5MbUsvph6TB5ca8A6SGjPcPXNyxYJZAfUYJdoW';
