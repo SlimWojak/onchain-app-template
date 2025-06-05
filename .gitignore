@@ -32,4 +32,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# media output
+*.webm
+*.mp3
+*.wav
+
 .env
