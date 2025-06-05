@@ -78,7 +78,8 @@ export default function Recorder() {
   };
 
   const uploadToIPFS = async (blob: Blob) => {
-    const client = new Client({ agent: globalThis.fetch.bind(globalThis) });
+    const client = new Client({ endpoint: "https://w3s.link" });
+
 
     await client.login('craig@imoon.ai');
     await client.setCurrentSpace(SPACE_DID);
