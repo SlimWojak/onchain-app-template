@@ -2,6 +2,25 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
+import { Client } from '@web3-storage/w3up-client';
+
+const uploadToIPFS = async (blob: Blob) => {
+  const client = new Client();
+
+  // Auth: Email must already be authorized in your W3UP dashboard
+  await client.login('craig@imoon.ai'); // ← replace this
+  await client.setCurrentSpace('z6MkhabowL5MbUsvph6TB5ca8A6SGjPcPXNyxYJZAfUYJdoW'); // ← replace this or pull from env
+
+  const file = new File([blob], 'frocbox-recording.webm', {
+    type: 'video/webm',
+  });
+
+  const cid = await client.uploadFile(file);
+
+  return `https://w3s.link/ipfs/${cid}`;
+};
+
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white p-6">
