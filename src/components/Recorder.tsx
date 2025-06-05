@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+import { createFFmpeg } from '@ffmpeg/ffmpeg';
 import { Client } from '@web3-storage/w3up-client';
 import { useAddress, useMetamask } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
@@ -56,8 +56,9 @@ export default function Recorder() {
   const runFFmpeg = async (audioBlob: Blob) => {
     if (!ffmpeg.isLoaded()) await ffmpeg.load();
 
-const audioData = await fetchFile(audioBlob);
-const videoData = await fetchFile('https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4');
+const audioData = await audioBlob.arrayBuffer();
+const videoResponse = await fetch('https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4');
+const videoData = await videoResponse.arrayBuffer();
 
 ffmpeg.FS('writeFile', 'audio.webm', audioData);
 ffmpeg.FS('writeFile', 'video.mp4', videoData);
