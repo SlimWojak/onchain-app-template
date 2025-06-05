@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { useAddress, useMetamask, ThirdwebProvider } from "@thirdweb-dev/react";
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { Client } from '@web3-storage/w3up-client';
-import { ethers } from "ethers";
+import { useAddress, useMetamask } from '@thirdweb-dev/react';
+import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 
+const ffmpeg = createFFmpeg({ log: true });
 const CONTRACT_ADDRESS = "0xdf8834A774d08Af6e2591576F075efbb459FEAF3";
 const SPACE_DID = process.env.SPACE_DID!;
 
@@ -17,35 +18,33 @@ export default function Recorder() {
   const [minting, setMinting] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const connectWithMetamask = useMetamask();
+  const connect = useMetamask();
   const walletAddress = useAddress();
 
   useEffect(() => {
-    if (!walletAddress) {
-      connectWithMetamask();
-    }
+    if (!walletAddress) connect();
   }, [walletAddress]);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mediaRecorder = new MediaRecorder(stream);
-    mediaRecorderRef.current = mediaRecorder;
+    const recorder = new MediaRecorder(stream);
+    mediaRecorderRef.current = recorder;
     audioChunksRef.current = [];
 
-    mediaRecorder.ondataavailable = (e) => {
-      if (e.data.size > 0) {
-        audioChunksRef.current.push(e.data);
-      }
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) audioChunksRef.current.push(e.data);
     };
 
-    mediaRecorder.onstop = () => {
+    recorder.onstop = async () => {
       const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
       const url = URL.createObjectURL(blob);
       setAudioURL(url);
-      uploadToIPFS(blob);
+
+      const finalVideo = await runFFmpeg(blob);
+      uploadToIPFS(finalVideo);
     };
 
-    mediaRecorder.start();
+    recorder.start();
     setRecording(true);
   };
 
@@ -54,14 +53,35 @@ export default function Recorder() {
     setRecording(false);
   };
 
+  const runFFmpeg = async (audioBlob: Blob) => {
+    if (!ffmpeg.isLoaded()) await ffmpeg.load();
+
+    ffmpeg.FS('writeFile', 'audio.webm', await fetchFile(audioBlob));
+    ffmpeg.FS('writeFile', 'video.mp4', await fetchFile('/You got a fren (NO SOUND).mp4'));
+
+    await ffmpeg.run(
+      '-i', 'video.mp4',
+      '-i', 'audio.webm',
+      '-map', '0:v:0',
+      '-map', '1:a:0',
+      '-c:v', 'copy',
+      '-c:a', 'aac',
+      '-shortest',
+      'output.mp4'
+    );
+
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    return new Blob([data.buffer], { type: 'video/mp4' });
+  };
+
   const uploadToIPFS = async (blob: Blob) => {
     const client = new Client();
     await client.login('craig@imoon.ai');
-   await client.setCurrentSpace(process.env.SPACE_DID!);
-    const file = new File([blob], 'frocbox-recording.webm', { type: 'video/webm' });
+    await client.setCurrentSpace(SPACE_DID);
+    const file = new File([blob], 'frocbox-final.mp4', { type: 'video/mp4' });
     const cid = await client.uploadFile(file);
     setIpfsCID(cid.toString());
-    console.log('✅ Uploaded to IPFS:', cid);
+    console.log("✅ Uploaded to IPFS:", cid);
   };
 
   const handleMint = async () => {
@@ -85,10 +105,14 @@ export default function Recorder() {
     <div className="p-6 bg-black text-white text-center">
       <h2 className="text-xl font-bold mb-4">🎤 Record Your Base Idol Track</h2>
       {!recording && (
-        <button onClick={startRecording} className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white font-semibold">Start Recording</button>
+        <button onClick={startRecording} className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white font-semibold">
+          Start Recording
+        </button>
       )}
       {recording && (
-        <button onClick={stopRecording} className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-white font-semibold">Stop Recording</button>
+        <button onClick={stopRecording} className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-white font-semibold">
+          Stop Recording
+        </button>
       )}
       {audioURL && (
         <div className="mt-6">
