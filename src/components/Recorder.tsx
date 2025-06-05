@@ -56,19 +56,22 @@ export default function Recorder() {
   const runFFmpeg = async (audioBlob: Blob) => {
     if (!ffmpeg.isLoaded()) await ffmpeg.load();
 
-    ffmpeg.FS('writeFile', 'audio.webm', await fetchFile(audioBlob));
-    ffmpeg.FS('writeFile', 'video.mp4', await fetchFile('https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4')
+const audioData = await fetchFile(audioBlob);
+const videoData = await fetchFile('https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4');
 
-    await ffmpeg.run(
-      '-i', 'video.mp4',
-      '-i', 'audio.webm',
-      '-map', '0:v:0',
-      '-map', '1:a:0',
-      '-c:v', 'copy',
-      '-c:a', 'aac',
-      '-shortest',
-      'output.mp4'
-    );
+ffmpeg.FS('writeFile', 'audio.webm', audioData);
+ffmpeg.FS('writeFile', 'video.mp4', videoData);
+
+await ffmpeg.run(
+  '-i', 'video.mp4',
+  '-i', 'audio.webm',
+  '-map', '0:v:0',
+  '-map', '1:a:0',
+  '-c:v', 'copy',
+  '-c:a', 'aac',
+  '-shortest',
+  'output.mp4'
+);
 
     const data = ffmpeg.FS('readFile', 'output.mp4');
     return new Blob([data.buffer], { type: 'video/mp4' });
