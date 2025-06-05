@@ -1,52 +1,45 @@
 'use client';
-import Footer from 'src/components/Footer';
-import TransactionWrapper from 'src/components/TransactionWrapper';
-import WalletWrapper from 'src/components/WalletWrapper';
-import { ONCHAINKIT_LINK } from 'src/links';
-import OnchainkitSvg from 'src/svg/OnchainkitSvg';
-import { useAccount } from 'wagmi';
-import LoginButton from '../components/LoginButton';
-import SignupButton from '../components/SignupButton';
 
-export default function Page() {
-  const { address } = useAccount();
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
+export default function Home() {
   return (
-    <div className="flex h-full w-96 max-w-full flex-col px-1 md:w-[1008px]">
-      <section className="mt-6 mb-6 flex w-full flex-col md:flex-row">
-        <div className="flex w-full flex-row items-center justify-between gap-2 md:gap-0">
-          <a
-            href={ONCHAINKIT_LINK}
-            title="onchainkit"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <OnchainkitSvg />
-          </a>
-          <div className="flex items-center gap-3">
-            <SignupButton />
-            {!address && <LoginButton />}
-          </div>
-        </div>
-      </section>
-      <section className="templateSection flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-gray-100 px-2 py-4 md:grow">
-        <div className="flex h-[450px] w-[450px] max-w-full items-center justify-center rounded-xl bg-[#030712]">
-          <div className="rounded-xl bg-[#F3F4F6] px-4 py-[11px]">
-            <p className="font-normal text-indigo-600 text-xl not-italic tracking-[-1.2px]">
-              npm install @coinbase/onchainkit
-            </p>
-          </div>
-        </div>
-        {address ? (
-          <TransactionWrapper address={address} />
-        ) : (
-          <WalletWrapper
-            className="w-[450px] max-w-full"
-            text="Sign in to transact"
+    <main className="min-h-screen bg-black text-white p-6">
+      <div className="max-w-xl mx-auto text-center">
+        <h1 className="text-4xl font-bold mb-2">FrocBox</h1>
+        <p className="mb-4">Your onchain meme jukebox. Built on Base.</p>
+        <ConnectButton />
+      </div>
+
+      <div className="mt-10 max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+        <video
+          controls
+          className="w-full"
+          poster="https://placehold.co/800x450?text=Video+Thumbnail"
+        >
+          <source
+            src="https://frocbox.s3.amazonaws.com/sample.mp4"
+            type="video/mp4"
           />
-        )}
-      </section>
-      <Footer />
-    </div>
+          Your browser does not support the video tag.
+        </video>
+
+        <div className="bg-black text-white p-4 text-center">
+          <h2 className="text-lg font-semibold">Fake Candle Dreams</h2>
+          <p className="text-sm text-gray-300">ft. Slim Wojak</p>
+        </div>
+
+        <div className="mt-4 text-center bg-black p-4">
+          <a
+            href="https://zora.co/collect/base/0xb4ba871d146963020093f0957bdc710368b17885"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-500 transition"
+          >
+            Mint on Zora
+          </a>
+        </div>
+      </div>
+    </main>
   );
 }
