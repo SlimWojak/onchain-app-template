@@ -76,20 +76,30 @@ export default function Recorder() {
     );
 
     const data = ffmpeg.FS('readFile', 'output.mp4');
-    return new Blob([data.buffer], { type: 'video/mp4' });
+  const buffer = data.buffer instanceof ArrayBuffer ? data.buffer : new Uint8Array(data.buffer).buffer;
+return new Blob([buffer], { type: 'video/mp4' });
   };
 
-  const uploadToIPFS = async (blob: Blob) => {
-    const client = new Client({ endpoint: 'https://w3s.link' });
-    await client.login('craig@imoon.ai');
-    await client.setCurrentSpace(SPACE_DID);
+const uploadToIPFS = async (blob: Blob): Promise<string> => {
+  const token = process.env.NEXT_PUBLIC_WEB3_STORAGE_TOKEN;
+  if (!token) throw new Error('Missing WEB3_STORAGE token in .env');
 
-    const file = new File([blob], 'frocbox-final.mp4', { type: 'video/mp4' });
-    const cid = await client.uploadFile(file);
+  const file = new File([blob], 'output.mp4', { type: 'video/mp4' });
 
-    setIpfsCID(cid.toString());
-    console.log('✅ Uploaded to IPFS:', cid);
-  };
+  const res = await fetch('https://api.web3.storage/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: file,
+  });
+
+  if (!res.ok) throw new Error(`Upload failed: ${res.statusText}`);
+
+  const data = await res.json();
+  return `https://w3s.link/ipfs/${data.cid}`;
+};
+
 
   const handleMint = async () => {
     if (!ipfsCID) return;
