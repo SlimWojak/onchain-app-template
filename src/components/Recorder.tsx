@@ -1,10 +1,12 @@
-import { useState, useRef } from 'react';
+'use client';
 
+import { useState, useRef } from 'react';
 import { Client } from '@web3-storage/w3up-client';
 
 export default function Recorder() {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
+  const [ipfsCID, setIpfsCID] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -27,18 +29,6 @@ export default function Recorder() {
       uploadToIPFS(blob);
     };
 
-    const uploadToIPFS = async (blob: Blob) => {
-  const client = new Client();
-
-  await client.login('craig@imoon.ai');
-  await client.setCurrentSpace(process.env.SPACE_DID!);
-
-  const file = new File([blob], 'frocbox-recording.webm', { type: 'video/webm' });
-  const cid = await client.uploadFile(file);
-
-  console.log('✅ Uploaded to IPFS:', cid);
-};
-
     mediaRecorder.start();
     setRecording(true);
   };
@@ -46,6 +36,24 @@ export default function Recorder() {
   const stopRecording = () => {
     mediaRecorderRef.current?.stop();
     setRecording(false);
+  };
+
+  const uploadToIPFS = async (blob: Blob) => {
+    const client = new Client();
+
+    await client.login('craig@imoon.ai');
+    await client.setCurrentSpace(process.env.SPACE_DID!);
+
+    const file = new File([blob], 'frocbox-recording.webm', { type: 'video/webm' });
+    const cid = await client.uploadFile(file);
+
+    setIpfsCID(cid.toString());
+    console.log('✅ Uploaded to IPFS:', cid);
+  };
+
+  const handleMint = () => {
+    if (!ipfsCID) return;
+    console.log('🪙 Minting track with CID:', ipfsCID);
   };
 
   return (
@@ -68,7 +76,7 @@ export default function Recorder() {
         >
           Stop Recording
         </button>
-     )}
+      )}
 
       {audioURL && (
         <div className="mt-6">
@@ -91,6 +99,15 @@ export default function Recorder() {
           >
             View on IPFS
           </a>
+
+          <div className="mt-4">
+            <button
+              onClick={handleMint}
+              className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded font-semibold"
+            >
+              Mint This Track
+            </button>
+          </div>
         </div>
       )}
     </div>
