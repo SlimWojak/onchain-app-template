@@ -6,18 +6,6 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Client } from '@web3-storage/w3up-client';
 import { useState } from 'react';
 
-const uploadToIPFS = async (blob: Blob) => {
-const client = new Client({ agent: globalThis.fetch });
-
-  await client.login('craig@imoon.ai'); // replace with your authorized W3UP email
-  await client.setCurrentSpace(process.env.SPACE_DID!); // must be set in .env or Vercel
-
-  const file = new File([blob], 'frocbox-recording.webm', { type: 'video/webm' });
-  const cid = await client.uploadFile(file);
-
-  return `https://w3s.link/ipfs/${cid}`;
-};
-
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white p-6">
