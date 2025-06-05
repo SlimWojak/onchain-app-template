@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg/dist/esm/index.js';
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { Client } from '@web3-storage/w3up-client';
 import { useAddress, useMetamask } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
