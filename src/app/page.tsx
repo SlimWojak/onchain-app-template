@@ -5,7 +5,7 @@ import { Client } from '@web3-storage/w3up-client';
 import { useState } from 'react';
 
 const uploadToIPFS = async (blob: Blob) => {
-  const client = new Client();
+const client = await Client.create();
 
   await client.login('craig@imoon.ai'); // replace with your authorized W3UP email
   await client.setCurrentSpace(process.env.SPACE_DID!); // must be set in .env or Vercel
