@@ -97,4 +97,3 @@ export default function Recorder() {
   );
 }
 
-export default Recorder;
