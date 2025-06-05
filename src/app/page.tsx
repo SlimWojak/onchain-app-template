@@ -1,5 +1,7 @@
 'use client';
 
+import Recorder from '../components/Recorder';
+
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Client } from '@web3-storage/w3up-client';
 import { useState } from 'react';
@@ -47,6 +49,10 @@ export default function Home() {
           Mint on Zora
         </a>
       </div>
+      <div className="mt-10">
+  <Recorder />
+</div>
+
     </main>
   );
 }
