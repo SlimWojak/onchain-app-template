@@ -79,7 +79,8 @@ export default function Recorder() {
   };
 
  const uploadToIPFS = async (blob: Blob) => {
-  const client = await Client.create(); // <— This is the fix
+ const client = new Client(); // ✅
+
 
   await client.login('craig@imoon.ai');
   await client.setCurrentSpace(SPACE_DID);
