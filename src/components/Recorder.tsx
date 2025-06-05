@@ -57,7 +57,7 @@ export default function Recorder() {
   const uploadToIPFS = async (blob: Blob) => {
     const client = new Client();
     await client.login('craig@imoon.ai');
-    await client.setCurrentSpace(SPACE_DID);
+   await client.setCurrentSpace(process.env.SPACE_DID!);
     const file = new File([blob], 'frocbox-recording.webm', { type: 'video/webm' });
     const cid = await client.uploadFile(file);
     setIpfsCID(cid.toString());

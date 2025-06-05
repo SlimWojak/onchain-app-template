@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { http, WagmiProvider, createConfig } from 'wagmi';
-import { base } from 'wagmi/chains';
+import { base } from '@wagmi/chains';
 import { mock } from 'wagmi/connectors';
 import LoginButton from './LoginButton';
 
