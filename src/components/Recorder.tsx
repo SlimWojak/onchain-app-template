@@ -82,22 +82,33 @@ return new Blob([buffer], { type: 'video/mp4' });
 
 const uploadToIPFS = async (blob: Blob): Promise<string> => {
   const token = process.env.NEXT_PUBLIC_WEB3_STORAGE_TOKEN;
-  if (!token) throw new Error('Missing WEB3_STORAGE token in .env');
+if (!res.ok) {
+  const errText = await res.text();
+  console.error("❌ Upload failed. Response:", errText);
+  throw new Error(`Upload failed: ${res.statusText}`);
+}
 
-  const file = new File([blob], 'output.mp4', { type: 'video/mp4' });
+const file = new File([blob], 'output.mp4', { type: 'video/mp4' });
+console.log("📦 File prepared for upload:", file);
 
-  const res = await fetch('https://api.web3.storage/upload', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: file,
-  });
+const res = await fetch('https://api.web3.storage/upload', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  body: file,
+});
 
-  if (!res.ok) throw new Error(`Upload failed: ${res.statusText}`);
+console.log("📡 Fetch POST sent to web3.storage");
 
-  const data = await res.json();
-  return `https://w3s.link/ipfs/${data.cid}`;
+if (!res.ok) {
+  const errText = await res.text();
+  console.error("❌ Upload failed. Response:", errText);
+  throw new Error(`Upload failed: ${res.statusText}`);
+}
+
+const data = await res.json();
+return `https://w3s.link/ipfs/${data.cid}`;
 };
 
 
