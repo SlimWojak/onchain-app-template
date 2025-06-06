@@ -2,7 +2,6 @@
 
 import Recorder from '../components/Recorder';
 import { ThirdwebProvider } from '@thirdweb-dev/react';
-
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Client } from '@web3-storage/w3up-client';
 import { useState } from 'react';
@@ -17,11 +16,10 @@ export default function Home() {
       </div>
 
       <div className="mt-10 max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-       <video controls className="w-full" poster="/animation/fren.png">
-  <source src="https://frocbox.s3.amazonaws.com/sample.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
-
+        <video controls className="w-full" poster="/animation/fren.png">
+          <source src="/animation/sample.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
 
       <div className="bg-black text-white p-4 text-center">
@@ -39,18 +37,18 @@ export default function Home() {
           Mint on Zora
         </a>
       </div>
-      <div className="mt-10">
-<ThirdwebProvider
-  sdkOptions={{
-    tracking: {
-      enabled: false
-    }
-  }}
->
-  <Recorder />
-</ThirdwebProvider>
-</div>
 
+      <div className="mt-10">
+        <ThirdwebProvider
+          sdkOptions={{
+            tracking: {
+              enabled: false
+            }
+          }}
+        >
+          <Recorder />
+        </ThirdwebProvider>
+      </div>
     </main>
   );
 }
