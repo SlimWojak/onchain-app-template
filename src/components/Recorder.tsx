@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
-import { useAddress, useMetamask } from '@thirdweb-dev/react';
+import { useAddress, useConnect, metamaskWallet, walletConnect } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import { createUploader } from '@web3-storage/w3up-client';
 import confetti from 'canvas-confetti';
@@ -17,12 +17,15 @@ export default function Recorder() {
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const connect = useMetamask();
+  const connect = useConnect();
   const walletAddress = useAddress();
 
   useEffect(() => {
-    if (!walletAddress) connect();
-  }, [walletAddress]);
+  if (!walletAddress) {
+    // Default to WalletConnect for broader support
+    connect(walletConnect());
+  }
+}, [walletAddress]);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -108,7 +111,22 @@ export default function Recorder() {
   return (
     <div className="p-6 bg-black text-white text-center">
       <h2 className="text-xl font-bold mb-4">🎙️ Record Your Base Idol Track</h2>
-
+{!walletAddress && (
+  <div className="space-x-4 my-4">
+    <button
+      onClick={() => connect(metamaskWallet())}
+      className="bg-purple-600 px-4 py-2 rounded text-white"
+    >
+      Connect MetaMask
+    </button>
+    <button
+      onClick={() => connect(walletConnect())}
+      className="bg-blue-600 px-4 py-2 rounded text-white"
+    >
+      WalletConnect
+    </button>
+  </div>
+)}
       {!recording ? (
         <button onClick={startRecording} className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white font-semibold">
           Start Recording
