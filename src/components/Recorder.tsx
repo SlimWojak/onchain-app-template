@@ -14,6 +14,7 @@ export default function Recorder() {
   const [recording, setRecording] = useState(false);
   const [minting, setMinting] = useState(false);
   const [videoURL, setVideoURL] = useState<string | null>(null);
+  const [mintedURL, setMintedURL] = useState<string | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -21,11 +22,8 @@ export default function Recorder() {
   const walletAddress = useAddress();
 
   useEffect(() => {
-  if (!walletAddress) {
-    // Default to WalletConnect for broader support
-    connect(walletConnect());
-  }
-}, [walletAddress]);
+    if (!walletAddress) connect(walletConnect());
+  }, [walletAddress]);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -96,11 +94,12 @@ export default function Recorder() {
         image: videoURL
       });
       console.log('✅ Minted NFT:', tx);
+      setMintedURL(`https://basescan.org/token/${CONTRACT_ADDRESS}?a=${tx.id}`);
       confetti({
-  particleCount: 150,
-  spread: 70,
-  origin: { y: 0.6 }
-});
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
     } catch (err) {
       console.error('❌ Mint error:', err);
     } finally {
@@ -111,22 +110,24 @@ export default function Recorder() {
   return (
     <div className="p-6 bg-black text-white text-center">
       <h2 className="text-xl font-bold mb-4">🎙️ Record Your Base Idol Track</h2>
-{!walletAddress && (
-  <div className="space-x-4 my-4">
-    <button
-      onClick={() => connect(metamaskWallet())}
-      className="bg-purple-600 px-4 py-2 rounded text-white"
-    >
-      Connect MetaMask
-    </button>
-    <button
-      onClick={() => connect(walletConnect())}
-      className="bg-blue-600 px-4 py-2 rounded text-white"
-    >
-      WalletConnect
-    </button>
-  </div>
-)}
+
+      {!walletAddress && (
+        <div className="space-x-4 my-4">
+          <button
+            onClick={() => connect(metamaskWallet())}
+            className="bg-purple-600 px-4 py-2 rounded text-white"
+          >
+            Connect MetaMask
+          </button>
+          <button
+            onClick={() => connect(walletConnect())}
+            className="bg-blue-600 px-4 py-2 rounded text-white"
+          >
+            WalletConnect
+          </button>
+        </div>
+      )}
+
       {!recording ? (
         <button onClick={startRecording} className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white font-semibold">
           Start Recording
@@ -147,16 +148,42 @@ export default function Recorder() {
             </video>
           </div>
 
-          <div className="mt-4 text-center">
-  <button
-  onClick={handleMint}
-  disabled={minting}
-  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2"
->
-  {minting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
-  {minting ? "Minting..." : "Mint This Clip"}
-</button>
+          <div className="mt-4 flex flex-col items-center gap-4">
+            <button
+              onClick={handleMint}
+              disabled={minting}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2"
+            >
+              {minting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+              {minting ? "Minting..." : "Mint This Clip"}
+            </button>
+
+            <a
+              href={videoURL}
+              download="froc-superstar.mp4"
+              className="text-white underline hover:text-green-400"
+            >
+              📥 Download Video
+            </a>
+
+            <a
+              href="https://zora.co/create"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-300 underline hover:text-blue-500"
+            >
+              🌐 Upload to Zora
+            </a>
           </div>
+
+          {mintedURL && (
+            <div className="mt-4 text-blue-300 text-sm">
+              ✅ Minted:
+              <a href={mintedURL} target="_blank" rel="noopener noreferrer" className="underline ml-1">
+                View on BaseScan
+              </a>
+            </div>
+          )}
         </>
       )}
     </div>
