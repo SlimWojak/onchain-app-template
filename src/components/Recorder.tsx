@@ -80,20 +80,19 @@ export default function Recorder() {
 return new Blob([buffer], { type: 'video/mp4' });
   };
 
+import { createUploader } from '@web3-storage/w3up-client'
+import { filesFromPaths } from 'files-from-path'
+
 const uploadToIPFS = async (blob: Blob): Promise<string> => {
-  const token = process.env.NEXT_PUBLIC_WEB3_STORAGE_TOKEN;
-  if (!token) throw new Error('Missing WEB3_STORAGE token in .env');
+  const client = await createUploader()
+  const file = new File([blob], 'output.mp4', { type: 'video/mp4' })
 
-  const file = new File([blob], 'output.mp4', { type: 'video/mp4' });
-  console.log("📦 File prepared for upload:", file);
+  console.log('📤 Uploading to Storacha...')
+  const cid = await client.uploadFile(file)
+  console.log(`✅ Uploaded with CID: ${cid}`)
 
-  const res = await fetch('https://api.web3.storage/v2/uploads', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: file,
-  });
+  return `https://w3s.link/ipfs/${cid}`
+}
 
   console.log("📡 Fetch POST sent to web3.storage");
 
