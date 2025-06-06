@@ -17,10 +17,11 @@ export default function Home() {
       </div>
 
       <div className="mt-10 max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        <video controls className="w-full" poster="https://placehold.co/800x450?text=Video+Thumbnail">
-          <source src="https://frocbox.s3.amazonaws.com/sample.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+       <video controls className="w-full" poster="/animation/fren.png">
+  <source src="https://frocbox.s3.amazonaws.com/sample.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
       </div>
 
       <div className="bg-black text-white p-4 text-center">
