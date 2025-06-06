@@ -81,7 +81,6 @@ return new Blob([buffer], { type: 'video/mp4' });
   };
 
 import { createUploader } from '@web3-storage/w3up-client'
-import { filesFromPaths } from 'files-from-path'
 
 const uploadToIPFS = async (blob: Blob): Promise<string> => {
   const client = await createUploader()
