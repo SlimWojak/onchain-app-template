@@ -5,8 +5,8 @@ import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { useAddress, useConnect, metamaskWallet, walletConnect } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import confetti from 'canvas-confetti';
-import 'react-tooltip/dist/react-tooltip.css';
 import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/tooltip.css';
 
 const ffmpeg = createFFmpeg({ log: true });
 const CONTRACT_ADDRESS = '0xdf8834A774d08Af6e2591576F075efbb459FEAF3';
@@ -57,7 +57,11 @@ export default function Recorder() {
     if (!ffmpeg.isLoaded()) await ffmpeg.load();
 
     ffmpeg.FS('writeFile', 'audio.webm', await fetchFile(audioBlob));
-    ffmpeg.FS('writeFile', 'video.mp4', await fetchFile('https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4'));
+    ffmpeg.FS(
+      'writeFile',
+      'video.mp4',
+      await fetchFile('https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4')
+    );
 
     await ffmpeg.run(
       '-i', 'video.mp4',
@@ -79,7 +83,6 @@ export default function Recorder() {
     if (!WEB3_TOKEN) throw new Error('Missing token in .env.local');
 
     const file = new File([blob], 'output.mp4', { type: 'video/mp4' });
-    console.log('📤 Uploading to Web3.Storage...');
     const res = await fetch('https://api.web3.storage/v2/uploads', {
       method: 'POST',
       headers: {
@@ -95,9 +98,7 @@ export default function Recorder() {
     }
 
     const data = await res.json();
-    const cid = data.cid;
-    console.log(`✅ Uploaded with CID: ${cid}`);
-    return `https://w3s.link/ipfs/${cid}`;
+    return `https://w3s.link/ipfs/${data.cid}`;
   };
 
   const handleMint = async () => {
@@ -111,7 +112,6 @@ export default function Recorder() {
         description: 'Minted from the FrocBox',
         image: videoURL,
       });
-      console.log('✅ Minted NFT:', tx);
       setMintedURL(`https://basescan.org/token/${CONTRACT_ADDRESS}?a=${tx.id}`);
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     } catch (err) {
@@ -169,12 +169,10 @@ export default function Recorder() {
 
           <div className="mt-6 flex flex-col items-center gap-3">
             <button
-              id="mint-btn"
-              data-tooltip-id="mint-tip"
-              data-tooltip-content="Mint this clip as a 1:1 NFT and enter the Base Idol competition"
               onClick={handleMint}
               disabled={minting}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2"
+              data-tooltip-id="mint-tooltip"
             >
               {minting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
               {minting ? 'Submitting...' : '🎟️ Enter Base Idol'}
@@ -184,7 +182,7 @@ export default function Recorder() {
               href={videoURL}
               download="froc-superstar.mp4"
               className="text-white underline hover:text-green-400"
-              title="Download your video file to keep or share"
+              data-tooltip-id="download-tooltip"
             >
               💾 Save Your Clip
             </a>
@@ -194,7 +192,7 @@ export default function Recorder() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-300 underline hover:text-blue-500"
-              title="Open Zora and mint your clip as a standalone music release"
+              data-tooltip-id="zora-tooltip"
             >
               🚀 Launch on Zora
             </a>
@@ -211,7 +209,9 @@ export default function Recorder() {
         </>
       )}
 
-      <Tooltip id="mint-tip" place="top" />
+      <Tooltip id="mint-tooltip" content="Mint this clip as a 1:1 NFT and enter Base Idol." />
+      <Tooltip id="download-tooltip" content="Download your video file to keep or share." />
+      <Tooltip id="zora-tooltip" content="Open Zora to mint this as a standalone music drop." />
 
       <footer className="mt-10 text-xs text-gray-500 text-center">
         Slim Wojak is watching 👀 — mint now to be judged.
