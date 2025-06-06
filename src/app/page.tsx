@@ -5,7 +5,7 @@ import { ThirdwebProvider } from '@thirdweb-dev/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Client } from '@web3-storage/w3up-client';
 import { useState } from 'react';
-
+  
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white p-6">
