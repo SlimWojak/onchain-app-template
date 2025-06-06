@@ -87,7 +87,7 @@ const uploadToIPFS = async (blob: Blob): Promise<string> => {
   const file = new File([blob], 'output.mp4', { type: 'video/mp4' });
   console.log("📦 File prepared for upload:", file);
 
-  const res = await fetch('https://api.web3.storage/upload', {
+  const res = await fetch('https://api.web3.storage/v2/uploads', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
