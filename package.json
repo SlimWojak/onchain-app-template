@@ -24,6 +24,7 @@
     "@thirdweb-dev/react": "^4.9.4",
     "@thirdweb-dev/sdk": "^4.0.99",
     "@web3-storage/w3up-client": "^17.3.0",
+    "canvas-confetti": "^1.9.3",
     "ethers": "^5.7.2",
     "next": "^14.2.5",
     "node-fetch": "^3.3.2",
