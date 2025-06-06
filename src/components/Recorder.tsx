@@ -21,6 +21,7 @@ export default function Recorder() {
   const audioChunksRef = useRef<Blob[]>([]);
   const connect = useMetamask();
   const walletAddress = useAddress();
+const [videoURL, setVideoURL] = useState<string | null>(null);
 
   useEffect(() => {
     if (!walletAddress) connect();
@@ -42,7 +43,8 @@ export default function Recorder() {
       setAudioURL(url);
 
       const finalVideo = await runFFmpeg(blob);
-      await uploadToIPFS(finalVideo);
+      const url = await uploadToIPFS(finalVideo);
+setVideoURL(url);
     };
 
     recorder.start();
@@ -74,6 +76,15 @@ export default function Recorder() {
       '-shortest',
       'output.mp4'
     );
+{videoURL && (
+  <div className="mt-6 text-center">
+    <h3 className="text-lg font-semibold">🎬 Final Video Preview:</h3>
+    <video controls className="mt-2 w-full rounded-lg shadow-md">
+      <source src={videoURL} type="video/mp4" />
+      Your browser does not support the video element.
+    </video>
+  </div>
+)}
 
     const data = ffmpeg.FS('readFile', 'output.mp4');
   const buffer = data.buffer instanceof ArrayBuffer ? data.buffer : new Uint8Array(data.buffer).buffer;
