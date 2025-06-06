@@ -1,6 +1,7 @@
 'use client';
 
 import Recorder from '../components/Recorder';
+import { ThirdwebProvider } from '@thirdweb-dev/react';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Client } from '@web3-storage/w3up-client';
@@ -38,7 +39,9 @@ export default function Home() {
         </a>
       </div>
       <div className="mt-10">
+<ThirdwebProvider>
   <Recorder />
+</ThirdwebProvider>
 </div>
 
     </main>
