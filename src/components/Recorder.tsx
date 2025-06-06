@@ -5,6 +5,8 @@ import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { useAddress, useConnect, metamaskWallet, walletConnect } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import confetti from 'canvas-confetti';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 const ffmpeg = createFFmpeg({ log: true });
 const CONTRACT_ADDRESS = '0xdf8834A774d08Af6e2591576F075efbb459FEAF3';
@@ -55,11 +57,9 @@ export default function Recorder() {
     if (!ffmpeg.isLoaded()) await ffmpeg.load();
 
     ffmpeg.FS('writeFile', 'audio.webm', await fetchFile(audioBlob));
-    ffmpeg.FS(
-      'writeFile',
-      'video.mp4',
-      await fetchFile('https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4')
-    );
+    ffmpeg.FS('writeFile', 'video.mp4', await fetchFile(
+      'https://w3s.link/ipfs/bafybeieda4yxt2uzgwirc6e56q4zscvhy4ry4nlg252p3d7jl4s7br2mmq/You%20got%20a%20fren%20(NO%20SOUND).mp4'
+    ));
 
     await ffmpeg.run(
       '-i', 'video.mp4',
@@ -125,6 +125,7 @@ export default function Recorder() {
 
   return (
     <div className="p-6 bg-black text-white text-center">
+      <Tooltip id="tooltip" />
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold text-fuchsia-400">🎤 BASE IDOL</h1>
         <p className="text-gray-300 text-sm">Submit your track. Impress the frog. Become legendary.</p>
@@ -144,16 +145,18 @@ export default function Recorder() {
       {!recording ? (
         <button
           onClick={startRecording}
+          data-tooltip-id="tooltip"
+          data-tooltip-content="Start recording your voice over the music video"
           className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white font-semibold"
-          title="Start recording your voice over the music video"
         >
           Start Recording
         </button>
       ) : (
         <button
           onClick={stopRecording}
+          data-tooltip-id="tooltip"
+          data-tooltip-content="Stop and generate your video"
           className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-white font-semibold"
-          title="Stop and generate your video"
         >
           Stop Recording
         </button>
@@ -173,8 +176,9 @@ export default function Recorder() {
             <button
               onClick={handleMint}
               disabled={minting}
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Mint this clip as a 1:1 NFT and enter the Base Idol competition"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2"
-              title="Mint this clip as a 1:1 NFT and enter the Base Idol competition"
             >
               {minting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
               {minting ? 'Submitting...' : '🎟️ Enter Base Idol'}
@@ -184,7 +188,8 @@ export default function Recorder() {
               href={videoURL}
               download="froc-superstar.mp4"
               className="text-white underline hover:text-green-400"
-              title="Download your video file to keep or share"
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Download your video file to keep or share"
             >
               💾 Save Your Clip
             </a>
@@ -194,7 +199,8 @@ export default function Recorder() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-300 underline hover:text-blue-500"
-              title="Open Zora and mint your clip as a standalone music release"
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Open Zora and mint your clip as a standalone music release"
             >
               🚀 Launch on Zora
             </a>
