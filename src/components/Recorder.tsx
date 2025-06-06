@@ -5,6 +5,7 @@ import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { useAddress, useMetamask } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import { createUploader } from '@web3-storage/w3up-client';
+import confetti from 'canvas-confetti';
 
 const ffmpeg = createFFmpeg({ log: true });
 const CONTRACT_ADDRESS = '0xdf8834A774d08Af6e2591576F075efbb459FEAF3';
@@ -92,6 +93,11 @@ export default function Recorder() {
         image: videoURL
       });
       console.log('✅ Minted NFT:', tx);
+      confetti({
+  particleCount: 150,
+  spread: 70,
+  origin: { y: 0.6 }
+});
     } catch (err) {
       console.error('❌ Mint error:', err);
     } finally {
@@ -124,13 +130,14 @@ export default function Recorder() {
           </div>
 
           <div className="mt-4 text-center">
-            <button
-              onClick={handleMint}
-              disabled={minting}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              {minting ? 'Minting...' : 'Mint This Clip'}
-            </button>
+  <button
+  onClick={handleMint}
+  disabled={minting}
+  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2"
+>
+  {minting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+  {minting ? "Minting..." : "Mint This Clip"}
+</button>
           </div>
         </>
       )}
