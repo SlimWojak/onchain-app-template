@@ -6,7 +6,7 @@ import { useAddress, useConnect, metamaskWallet, walletConnect } from '@thirdweb
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import confetti from 'canvas-confetti';
 import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/tooltip.css';
+import 'react-tooltip/dist/react-tooltip.css';
 
 const ffmpeg = createFFmpeg({ log: true });
 const CONTRACT_ADDRESS = '0xdf8834A774d08Af6e2591576F075efbb459FEAF3';
