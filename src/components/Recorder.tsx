@@ -109,7 +109,10 @@ export default function Recorder() {
 
   return (
     <div className="p-6 bg-black text-white text-center">
-      <h2 className="text-xl font-bold mb-4">🎙️ Record Your Base Idol Track</h2>
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold text-fuchsia-400">🎤 BASE IDOL</h1>
+        <p className="text-gray-300 text-sm">Submit your track. Impress the frog. Become legendary.</p>
+      </div>
 
       {!walletAddress && (
         <div className="space-x-4 my-4">
@@ -150,7 +153,11 @@ export default function Recorder() {
         <>
           <div className="mt-6 text-center">
             <h3 className="text-lg font-semibold">🎬 Final Video Preview:</h3>
-            <video controls className="mt-2 w-full rounded-lg shadow-md">
+            <video
+              controls
+              className="mt-2 w-full rounded-lg shadow-md"
+              poster="/animation/fren.png"
+            >
               <source src={videoURL} type="video/mp4" />
               Your browser does not support the video element.
             </video>
@@ -197,6 +204,10 @@ export default function Recorder() {
           )}
         </>
       )}
+
+      <footer className="mt-10 text-xs text-gray-500 text-center">
+        Slim Wojak is watching 👀 — mint now to be judged.
+      </footer>
     </div>
   );
 }
