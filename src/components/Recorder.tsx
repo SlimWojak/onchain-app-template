@@ -129,11 +129,19 @@ export default function Recorder() {
       )}
 
       {!recording ? (
-        <button onClick={startRecording} className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white font-semibold">
+        <button
+          onClick={startRecording}
+          className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white font-semibold"
+          title="Start recording your voice over the music video"
+        >
           Start Recording
         </button>
       ) : (
-        <button onClick={stopRecording} className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-white font-semibold">
+        <button
+          onClick={stopRecording}
+          className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-white font-semibold"
+          title="Stop and generate your video"
+        >
           Stop Recording
         </button>
       )}
@@ -148,31 +156,34 @@ export default function Recorder() {
             </video>
           </div>
 
-          <div className="mt-4 flex flex-col items-center gap-4">
+          <div className="mt-6 flex flex-col items-center gap-3">
             <button
               onClick={handleMint}
               disabled={minting}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2"
+              title="Mint this clip as a 1:1 NFT and enter the Base Idol competition"
             >
               {minting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
-              {minting ? "Minting..." : "Mint This Clip"}
+              {minting ? "Submitting..." : "🎟️ Enter Base Idol"}
             </button>
 
             <a
               href={videoURL}
               download="froc-superstar.mp4"
               className="text-white underline hover:text-green-400"
+              title="Download your video file to keep or share"
             >
-              📥 Download Video
+              💾 Save Your Clip
             </a>
 
             <a
-              href="https://zora.co/create"
+              href={`https://zora.co/create?media=${encodeURIComponent(videoURL)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-300 underline hover:text-blue-500"
+              title="Open Zora and mint your clip as a standalone music release"
             >
-              🌐 Upload to Zora
+              🚀 Launch on Zora
             </a>
           </div>
 
