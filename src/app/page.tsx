@@ -39,7 +39,13 @@ export default function Home() {
         </a>
       </div>
       <div className="mt-10">
-<ThirdwebProvider>
+<ThirdwebProvider
+  sdkOptions={{
+    tracking: {
+      enabled: false
+    }
+  }}
+>
   <Recorder />
 </ThirdwebProvider>
 </div>
